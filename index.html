@@ -7,6 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300&family=Inter:wght@300;400&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // ── EmailJS Initialisation ──
+  // Replace YOUR_PUBLIC_KEY with your EmailJS public key
+  // Replace YOUR_SERVICE_ID and YOUR_TEMPLATE_ID below in the submit handler
+  (function(){
+    emailjs.init({ publicKey: 'OXmQOlTntWTUj0yae' });
+  })();
+</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -174,16 +183,20 @@ nav{
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  margin-top:-40px; /* optical lift: compensates for scroll-hint below */
+  width:100%;
+  /* push content below the fixed nav (~70px) so logo is never clipped */
+  padding-top:80px;
 }
 
 /* Looping logo canvas in hero */
 #hero-logo-wrap{
   position:relative;
-  width:min(340px,50vw);
+  width:min(300px,45vw);
   aspect-ratio:1;
   margin:0 auto 8px;
   cursor:pointer;
+  /* ensure canvas never slides under the nav gradient */
+  z-index:1;
 }
 #hero-logo-canvas{
   width:100%;
@@ -220,7 +233,11 @@ nav{
   text-shadow:0 0 60px rgba(255,200,80,0.18);
   text-transform:uppercase;
   margin-bottom:4px;
-  padding-right:.5em; /* optical correction for letter-spacing */
+  width:100%;
+  text-align:center;
+  /* letter-spacing shifts text left — text-indent corrects it by indenting
+     by exactly one letter-spacing unit so the word sits truly centred */
+  text-indent:.5em;
 }
 .hero-labs{
   font-family:'Cormorant Garamond',serif;
@@ -230,6 +247,10 @@ nav{
   color:rgba(255,235,185,0.62);
   text-transform:uppercase;
   margin-bottom:52px;
+  width:100%;
+  text-align:center;
+  /* compensate letter-spacing trailing offset — same trick as wordmark */
+  text-indent:.8em;
 }
 .divider{
   width:clamp(60px,8vw,120px);
@@ -407,69 +428,95 @@ section{
   margin:0 auto;
   text-align:center;
 }
+/* honeypot */
+.hp-field{position:absolute;left:-9999px;opacity:0;pointer-events:none}
+
+/* ── Form stack: two inputs + button, all separate, airy ── */
 .form-wrap{
   position:relative;
   display:flex;
-  gap:0;
-  max-width:480px;
-  margin:0 auto 16px;
-  border:.5px solid rgba(255,210,120,0.25);
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  max-width:380px;
+  margin:0 auto 20px;
+}
+
+/* Shared input style */
+.form-field{
+  width:100%;
+  background:rgba(0,0,0,0.45);
+  border:.5px solid rgba(255,210,120,0.22);
   border-radius:2px;
-  overflow:hidden;
-  background:rgba(0,0,0,0.5);
   backdrop-filter:blur(8px);
-  transition:border-color .3s, box-shadow .3s;
+  transition:border-color .35s, box-shadow .35s;
 }
-.form-wrap:focus-within{
-  border-color:rgba(255,210,120,0.5);
-  box-shadow:0 0 30px rgba(255,210,120,0.08);
+.form-field:focus-within{
+  border-color:rgba(255,210,120,0.55);
+  box-shadow:0 0 22px rgba(255,210,120,0.07);
 }
-/* honeypot */
-.hp-field{position:absolute;left:-9999px;opacity:0;pointer-events:none;tab-index:-1}
+
+#name-input,
 #email-input{
-  flex:1;
+  width:100%;
   background:transparent;
   border:none;
   outline:none;
-  padding:16px 20px;
+  padding:13px 18px;
   font-family:'Inter',sans-serif;
-  font-size:13px;
-  letter-spacing:.08em;
-  color:rgba(246,243,234,0.8);
+  font-size:12px;
+  letter-spacing:.1em;
+  color:rgba(246,243,234,0.82);
+  display:block;
 }
-#email-input::placeholder{color:rgba(246,243,234,0.25);letter-spacing:.12em}
-#join-btn{
-  background:linear-gradient(135deg,rgba(255,178,55,0.9),rgba(255,210,120,0.85));
-  border:none;
-  padding:16px 28px;
-  font-family:'Inter',sans-serif;
+#name-input::placeholder,
+#email-input::placeholder{
+  color:rgba(246,243,234,0.22);
+  letter-spacing:.14em;
   font-size:11px;
-  font-weight:400;
-  letter-spacing:.18em;
-  color:#100800;
+}
+
+/* Button — auto width, centred, just wide enough for its label */
+#join-btn{
+  width:auto;
+  align-self:center;
+  background:linear-gradient(135deg,rgba(255,172,45,0.92),rgba(255,210,120,0.88));
+  border:none;
+  border-radius:2px;
+  padding:12px 36px;
+  font-family:'Inter',sans-serif;
+  font-size:10px;
+  font-weight:500;
+  letter-spacing:.22em;
+  color:#0e0700;
   cursor:pointer;
   text-transform:uppercase;
   white-space:nowrap;
   transition:all .3s;
   position:relative;
   overflow:hidden;
+  margin-top:4px;
 }
 #join-btn::after{
   content:'';
   position:absolute;
   inset:0;
-  background:rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.12);
   opacity:0;
   transition:opacity .3s;
 }
 #join-btn:hover::after{opacity:1}
-#join-btn:hover{box-shadow:0 0 30px rgba(255,200,80,0.3)}
+#join-btn:hover{
+  box-shadow:0 0 28px rgba(255,200,80,0.28),0 2px 16px rgba(255,160,30,0.18);
+  letter-spacing:.26em;
+}
 .form-note{
   font-family:'Inter',sans-serif;
-  font-size:10px;
-  letter-spacing:.15em;
-  color:rgba(246,243,234,0.42);
+  font-size:9px;
+  letter-spacing:.16em;
+  color:rgba(246,243,234,0.32);
   text-transform:uppercase;
+  margin-top:4px;
 }
 .success-msg{
   display:none;
@@ -635,7 +682,7 @@ footer{
     <div id="R" style="width:100%;aspect-ratio:16/9;background:#000;position:relative;overflow:hidden">
       <canvas id="cv" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
       <div style="position:absolute;bottom:11px;right:13px;z-index:99;display:flex;gap:8px;align-items:center">
-        <span id="st" style="font-family:monospace;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:.1em"></span>
+        <span id="st" style="font-family:monospace;font-size:11px;font-weight:700;color:rgba(255,210,80,0.92);letter-spacing:.18em;text-shadow:0 0 18px rgba(255,200,60,0.7),0 0 40px rgba(255,180,30,0.4)"></span>
       </div>
     </div>
   </div>
@@ -714,7 +761,7 @@ footer{
   <!-- PILLARS -->
   <section style="padding:100px 24px">
     <div class="section-eyebrow reveal">What We Create</div>
-    <h2 class="section-title reveal">The Three Pillars</h2>
+    <h2 class="section-title reveal">The Four Pillars</h2>
     <div id="pillars-wrap">
       <div class="pillar reveal reveal-delay-1">
         <div class="pillar-glyph">◈</div>
@@ -755,16 +802,24 @@ footer{
       <div class="form-wrap">
         <!-- honeypot -->
         <input class="hp-field" type="text" name="website" tabindex="-1" autocomplete="off"/>
-        <input id="email-input" type="email" placeholder="Enter your email" autocomplete="email"/>
+        <!-- Name field -->
+        <div class="form-field">
+          <input id="name-input" type="text" placeholder="Your name" autocomplete="given-name" maxlength="80"/>
+        </div>
+        <!-- Email field -->
+        <div class="form-field">
+          <input id="email-input" type="email" placeholder="Your email" autocomplete="email"/>
+        </div>
+        <!-- Submit button -->
         <button id="join-btn" type="button">Join the First Light</button>
       </div>
       <div id="form-error"></div>
       <p class="form-note">No noise. Only signal. When creation begins, you will know.</p>
     </div>
 
-    <div id="success-block" class="success-msg reveal">
+    <div id="success-block" class="success-msg">
       <div class="success-title">Welcome.</div>
-      <div class="success-body">You will witness the birth.</div>
+      <div class="success-body">You will witness the birth. &nbsp;·&nbsp; Type <em>AUM</em> to unlock a secret.</div>
     </div>
   </section>
 
@@ -780,7 +835,7 @@ footer{
       <!-- Twitter / X -->
       <a href="https://x.com/navdyuti" target="_blank" rel="noopener noreferrer" class="comm-link" aria-label="Twitter / X">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        <span class="comm-label">X / Twitter</span>
+        <span class="comm-label">X (f.k.a. Twitter)</span>
       </a>
       <!-- Instagram -->
       <a href="https://www.instagram.com/navdyuti/" target="_blank" rel="noopener noreferrer" class="comm-link" aria-label="Instagram">
@@ -1853,38 +1908,90 @@ window.addEventListener('scroll',()=>{
 },{passive:true});
 
 // ── EMAIL WAITLIST ──
-document.getElementById('join-btn').addEventListener('click',async()=>{
-  const email=document.getElementById('email-input').value.trim();
-  const hp=document.querySelector('.hp-field');
-  const errEl=document.getElementById('form-error');
-  errEl.textContent='';
+// ─────────────────────────────────────────────────────────────────
+// Google Apps Script — stores signup + duplicate check:
+const SCRIPT_URL = 'https://sheetworker.navdyuti.workers.dev';
 
-  // Honeypot check
-  if(hp&&hp.value){ return; }
+const EMAILJS_SERVICE_ID  = 'service_n81i46i';
+const EMAILJS_TEMPLATE_ID = 'template_hnubaqc';
+// ─────────────────────────────────────────────────────────────────
 
-  // Validation
-  const re=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if(!re.test(email)){
-    errEl.textContent='Please enter a valid email address.';
+// ── Element refs ──
+const joinBtn     = document.getElementById('join-btn');
+const nameInput   = document.getElementById('name-input');
+const emailInput  = document.getElementById('email-input');
+const errorBox    = document.getElementById('form-error');
+const successBlock = document.getElementById('success-block');
+const formBlock   = document.getElementById('waitlist-form-block');
+
+// ── Email validation ──
+function validEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// ── Waitlist submit — via Cloudflare Worker proxy (handles CORS) ──
+joinBtn.addEventListener('click', async () => {
+  const name  = nameInput.value.trim();
+  const email = emailInput.value.trim();
+  const hp    = document.querySelector('.hp-field');
+  errorBox.textContent = '';
+
+  if (hp && hp.value) { return; }
+
+  if (!name || name.length < 2) {
+    errorBox.textContent = 'Please enter your name.';
+    return;
+  }
+  if (!validEmail(email)) {
+    errorBox.textContent = 'Please enter a valid email.';
     return;
   }
 
-  const btn=document.getElementById('join-btn');
-  btn.textContent='...';
-  btn.style.pointerEvents='none';
+  joinBtn.disabled = true;
+  joinBtn.textContent = 'Joining...';
 
-  // Simulate submit (replace with real API endpoint)
-  await new Promise(r=>setTimeout(r,900));
+  try {
+    const url = SCRIPT_URL
+      + '?name='  + encodeURIComponent(name)
+      + '&email=' + encodeURIComponent(email);
 
-  document.getElementById('waitlist-form-block').style.display='none';
-  const success=document.getElementById('success-block');
-  success.classList.add('show');
-  success.style.display='block';
+    const response = await fetch(url);
+    const result   = await response.json();
+
+    if (result.status === 'success') {
+      // Variables match EmailJS template: {{name}} and {{email}}
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        name  : name,
+        email : email,
+      }).catch(err => console.warn('EmailJS:', err));
+
+      const firstName = name.split(' ')[0];
+      formBlock.style.display = 'none';
+      successBlock.querySelector('.success-title').textContent = 'Welcome, ' + firstName + '.';
+      successBlock.querySelector('.success-body').innerHTML =
+        'You are in the exclusive list of the First Circle.<br>' +
+        'Type <em>AUM</em> to unlock a secret.';
+      successBlock.classList.add('show');
+      successBlock.style.display = 'block';
+
+    } else if (result.status === 'duplicate') {
+      errorBox.textContent = 'You are already in the First Circle.';
+    } else {
+      errorBox.textContent = 'Something went wrong. Please try again.';
+    }
+
+  } catch (err) {
+    console.error(err);
+    errorBox.textContent = 'Connection failed. Please try again.';
+  }
+
+  joinBtn.disabled = false;
+  joinBtn.textContent = 'Join the First Light';
 });
-
+ 
 // ── FOOTER YEAR ──
 document.getElementById('year').textContent=new Date().getFullYear();
 </script>
-
+ 
 </body>
 </html>
