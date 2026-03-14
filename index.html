@@ -1,0 +1,1890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Navdyuti Labs — Worlds are not built. They are born.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300&family=Inter:wght@300;400&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#ffd27a;
+  --gold2:#ffb347;
+  --gold3:#ffe7b3;
+  --gold-glow:rgba(255,210,120,0.5);
+  --text:#f6f3ea;
+  --bg:#000;
+  --nebula1:#1c0f2e;
+  --nebula2:#120a26;
+  --nebula3:#1b2a4a;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Cormorant Garamond',Georgia,serif;
+  overflow-x:hidden;
+  cursor:default;
+}
+
+/* ═══════════════════════════════════════════════
+   CUSTOM SCROLLBAR
+═══════════════════════════════════════════════ */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:rgba(0,0,0,0.9)}
+::-webkit-scrollbar-thumb{background:rgba(255,210,120,0.25);border-radius:2px}
+
+/* ═══════════════════════════════════════════════
+   OVERLAY INTRO (covers body, fades after reveal)
+═══════════════════════════════════════════════ */
+#intro-overlay{
+  position:fixed;
+  inset:0;
+  background:#000;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:opacity 1.4s ease;
+}
+#intro-overlay.fade-out{opacity:0;pointer-events:none}
+
+#intro-canvas-wrap{
+  position:relative;
+  width:min(900px, 95vw);
+  aspect-ratio:16/9;
+}
+/* skip button removed — only the pulsating dot starts the experience */
+
+/* ═══════════════════════════════════════════════
+   COSMIC BACKGROUND (full-page, looping)
+═══════════════════════════════════════════════ */
+#cosmic-bg{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+}
+#bg-canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+}
+.nebula-blob{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(90px);
+  pointer-events:none;
+}
+.nb1{
+  width:70vw;height:70vw;
+  top:-20vw;left:-10vw;
+  background:radial-gradient(ellipse,rgba(28,15,46,0.7),transparent 70%);
+  animation:nebDrift1 28s ease-in-out infinite alternate;
+}
+.nb2{
+  width:60vw;height:60vw;
+  bottom:-15vw;right:-10vw;
+  background:radial-gradient(ellipse,rgba(27,42,74,0.6),transparent 70%);
+  animation:nebDrift2 34s ease-in-out infinite alternate;
+}
+.nb3{
+  width:50vw;height:50vw;
+  top:30vh;left:30vw;
+  background:radial-gradient(ellipse,rgba(18,10,38,0.5),transparent 70%);
+  animation:nebDrift3 40s ease-in-out infinite alternate;
+}
+@keyframes nebDrift1{0%{transform:translate(0,0) scale(1)}100%{transform:translate(4vw,5vh) scale(1.1)}}
+@keyframes nebDrift2{0%{transform:translate(0,0) scale(1)}100%{transform:translate(-5vw,-4vh) scale(1.12)}}
+@keyframes nebDrift3{0%{transform:translate(0,0) scale(1)}100%{transform:translate(3vw,-6vh) scale(0.95)}}
+
+/* ═══════════════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════════════ */
+#page{
+  position:relative;
+  z-index:1;
+  opacity:0;
+  transition:opacity 1.2s ease .3s;
+}
+#page.visible{opacity:1}
+
+/* ═══════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════ */
+nav{
+  position:fixed;
+  top:0;left:0;right:0;
+  z-index:100;
+  padding:22px 48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.7),transparent);
+  backdrop-filter:blur(2px);
+}
+.nav-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:200;
+  font-size:1.1rem;
+  letter-spacing:.35em;
+  color:rgba(246,243,234,0.92);
+  text-transform:uppercase;
+}
+.nav-logo span{
+  color:var(--gold);
+  opacity:0.8;
+}
+.nav-links{
+  display:flex;
+  gap:32px;
+  list-style:none;
+}
+.nav-links a{
+  font-family:'Inter',sans-serif;
+  font-size:10px;
+  letter-spacing:.2em;
+  color:rgba(246,243,234,0.65);
+  text-decoration:none;
+  text-transform:uppercase;
+  transition:color .3s;
+}
+.nav-links a:hover{color:rgba(255,210,120,0.8)}
+
+/* ═══════════════════════════════════════════════
+   HERO SECTION
+═══════════════════════════════════════════════ */
+#hero{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  padding:0 20px 120px;
+  text-align:center;
+}
+/* inner group floats at true centre, not pushed by nav padding */
+.hero-inner{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  margin-top:-40px; /* optical lift: compensates for scroll-hint below */
+}
+
+/* Looping logo canvas in hero */
+#hero-logo-wrap{
+  position:relative;
+  width:min(340px,50vw);
+  aspect-ratio:1;
+  margin:0 auto 8px;
+  cursor:pointer;
+}
+#hero-logo-canvas{
+  width:100%;
+  height:100%;
+  position:absolute;
+  inset:0;
+}
+.easter-egg-msg{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Cormorant Garamond',serif;
+  font-weight:200;
+  font-size:clamp(14px,2.2vw,22px);
+  letter-spacing:.25em;
+  color:var(--gold3);
+  text-shadow:0 0 40px var(--gold-glow), 0 0 80px rgba(255,180,60,0.3);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .6s;
+  text-align:center;
+  padding:20px;
+}
+.easter-egg-msg.show{opacity:1}
+
+.hero-wordmark{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:200;
+  font-size:clamp(28px,5.5vw,72px);
+  letter-spacing:.5em;
+  color:rgba(255,235,185,0.92);
+  text-shadow:0 0 60px rgba(255,200,80,0.18);
+  text-transform:uppercase;
+  margin-bottom:4px;
+  padding-right:.5em; /* optical correction for letter-spacing */
+}
+.hero-labs{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:200;
+  font-size:clamp(10px,1.2vw,16px);
+  letter-spacing:.8em;
+  color:rgba(255,235,185,0.62);
+  text-transform:uppercase;
+  margin-bottom:52px;
+}
+.divider{
+  width:clamp(60px,8vw,120px);
+  height:.5px;
+  background:linear-gradient(to right,transparent,rgba(255,210,120,0.55),transparent);
+  margin:0 auto 48px;
+}
+.hero-tagline{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-weight:200;
+  font-size:clamp(18px,2.8vw,36px);
+  line-height:1.7;
+  letter-spacing:.1em;
+  color:rgba(246,243,234,0.82);
+  max-width:580px;
+  margin:0 auto 60px;
+  text-shadow:0 2px 24px rgba(0,0,0,0.7);
+}
+.scroll-hint{
+  position:absolute;
+  bottom:36px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  opacity:0.35;
+  animation:scrollPulse 3s ease-in-out infinite;
+}
+.scroll-hint span{
+  font-family:'Inter',sans-serif;
+  font-size:9px;
+  letter-spacing:.25em;
+  color:var(--gold);
+  text-transform:uppercase;
+}
+.scroll-line{
+  width:.5px;
+  height:44px;
+  background:linear-gradient(to bottom,rgba(255,210,120,0.6),transparent);
+  animation:scrollLine 3s ease-in-out infinite;
+}
+@keyframes scrollPulse{0%,100%{opacity:0.25}50%{opacity:0.55}}
+@keyframes scrollLine{0%,100%{transform:scaleY(0.4);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+
+/* ═══════════════════════════════════════════════
+   SECTION SHARED
+═══════════════════════════════════════════════ */
+section{
+  position:relative;
+  z-index:1;
+  padding:120px 48px;
+}
+.section-eyebrow{
+  font-family:'Inter',sans-serif;
+  font-size:9px;
+  letter-spacing:.35em;
+  color:rgba(255,210,120,0.80);
+  text-transform:uppercase;
+  text-align:center;
+  margin-bottom:28px;
+}
+.section-title{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:200;
+  font-size:clamp(32px,4.5vw,58px);
+  letter-spacing:.2em;
+  color:rgba(255,240,200,0.97);
+  text-align:center;
+  line-height:1.3;
+  margin-bottom:20px;
+  text-shadow:0 2px 32px rgba(0,0,0,0.8);
+}
+.section-body{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:clamp(16px,1.8vw,22px);
+  line-height:1.9;
+  letter-spacing:.06em;
+  color:rgba(246,243,234,0.78);
+  text-align:center;
+  max-width:580px;
+  margin:0 auto 56px;
+  text-shadow:0 1px 12px rgba(0,0,0,0.6);
+}
+
+/* ═══════════════════════════════════════════════
+   ABOUT / MANIFESTO SECTION
+═══════════════════════════════════════════════ */
+#manifesto{
+  display:grid;
+  grid-template-columns:1fr;
+  max-width:900px;
+  margin:0 auto;
+}
+.manifesto-line{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;
+  font-weight:200;
+  font-size:clamp(18px,2.5vw,32px);
+  line-height:1.8;
+  letter-spacing:.08em;
+  color:rgba(246,243,234,0.52);
+  text-align:center;
+  transition:color 1s, text-shadow 1s;
+  padding:8px 0;
+}
+.manifesto-line.lit{
+  color:rgba(255,245,220,0.97);
+  text-shadow:0 0 40px rgba(255,200,80,0.22), 0 2px 20px rgba(0,0,0,0.7);
+}
+
+/* ═══════════════════════════════════════════════
+   FEATURES / PILLARS
+═══════════════════════════════════════════════ */
+#pillars-wrap{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:2px;
+  max-width:1100px;
+  margin:0 auto;
+}
+.pillar{
+  padding:52px 40px;
+  border:0.5px solid rgba(255,210,120,0.08);
+  background:rgba(255,255,255,0.02);
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  transition:background .5s, border-color .5s;
+}
+.pillar::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(ellipse at 50% 0%, rgba(255,210,120,0.05), transparent 65%);
+  opacity:0;
+  transition:opacity .5s;
+}
+.pillar:hover{
+  background:rgba(255,210,120,0.04);
+  border-color:rgba(255,210,120,0.18);
+}
+.pillar:hover::before{opacity:1}
+.pillar-glyph{
+  font-size:clamp(28px,3vw,40px);
+  margin-bottom:20px;
+  opacity:0.7;
+  filter:sepia(0.5) saturate(2);
+}
+.pillar-title{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:clamp(16px,1.6vw,20px);
+  letter-spacing:.25em;
+  color:rgba(255,240,200,0.95);
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+.pillar-desc{
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  line-height:1.8;
+  letter-spacing:.04em;
+  color:rgba(246,243,234,0.62);
+}
+
+/* ═══════════════════════════════════════════════
+   WAITLIST SECTION
+═══════════════════════════════════════════════ */
+#waitlist{
+  max-width:680px;
+  margin:0 auto;
+  text-align:center;
+}
+.form-wrap{
+  position:relative;
+  display:flex;
+  gap:0;
+  max-width:480px;
+  margin:0 auto 16px;
+  border:.5px solid rgba(255,210,120,0.25);
+  border-radius:2px;
+  overflow:hidden;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(8px);
+  transition:border-color .3s, box-shadow .3s;
+}
+.form-wrap:focus-within{
+  border-color:rgba(255,210,120,0.5);
+  box-shadow:0 0 30px rgba(255,210,120,0.08);
+}
+/* honeypot */
+.hp-field{position:absolute;left:-9999px;opacity:0;pointer-events:none;tab-index:-1}
+#email-input{
+  flex:1;
+  background:transparent;
+  border:none;
+  outline:none;
+  padding:16px 20px;
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  letter-spacing:.08em;
+  color:rgba(246,243,234,0.8);
+}
+#email-input::placeholder{color:rgba(246,243,234,0.25);letter-spacing:.12em}
+#join-btn{
+  background:linear-gradient(135deg,rgba(255,178,55,0.9),rgba(255,210,120,0.85));
+  border:none;
+  padding:16px 28px;
+  font-family:'Inter',sans-serif;
+  font-size:11px;
+  font-weight:400;
+  letter-spacing:.18em;
+  color:#100800;
+  cursor:pointer;
+  text-transform:uppercase;
+  white-space:nowrap;
+  transition:all .3s;
+  position:relative;
+  overflow:hidden;
+}
+#join-btn::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,0.15);
+  opacity:0;
+  transition:opacity .3s;
+}
+#join-btn:hover::after{opacity:1}
+#join-btn:hover{box-shadow:0 0 30px rgba(255,200,80,0.3)}
+.form-note{
+  font-family:'Inter',sans-serif;
+  font-size:10px;
+  letter-spacing:.15em;
+  color:rgba(246,243,234,0.42);
+  text-transform:uppercase;
+}
+.success-msg{
+  display:none;
+  padding:24px;
+  background:rgba(255,210,120,0.05);
+  border:.5px solid rgba(255,210,120,0.2);
+  border-radius:2px;
+}
+.success-msg.show{display:block;animation:fadeInUp .8s ease forwards}
+.success-title{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:200;
+  font-size:clamp(22px,2.5vw,32px);
+  letter-spacing:.25em;
+  color:var(--gold3);
+  margin-bottom:8px;
+}
+.success-body{
+  font-family:'Inter',sans-serif;
+  font-size:12px;
+  letter-spacing:.15em;
+  color:rgba(246,243,234,0.4);
+}
+#form-error{
+  font-family:'Inter',sans-serif;
+  font-size:11px;
+  letter-spacing:.1em;
+  color:rgba(255,120,80,0.75);
+  margin-top:8px;
+  min-height:18px;
+  text-align:center;
+}
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ═══════════════════════════════════════════════
+   COMMUNITY LINKS
+═══════════════════════════════════════════════ */
+#community{padding-top:60px;padding-bottom:80px}
+.community-inner{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:48px;
+  flex-wrap:wrap;
+}
+.comm-link{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+  color:rgba(246,243,234,0.3);
+  transition:color .4s;
+}
+.comm-link svg{
+  width:24px;height:24px;
+  fill:currentColor;
+  transition:filter .4s;
+}
+.comm-link:hover{color:var(--gold)}
+.comm-link:hover svg{filter:drop-shadow(0 0 10px rgba(255,210,120,0.6))}
+.comm-label{
+  font-family:'Inter',sans-serif;
+  font-size:9px;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+}
+
+/* ═══════════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════════ */
+footer{
+  border-top:.5px solid rgba(255,210,120,0.08);
+  padding:40px 48px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:16px;
+}
+.footer-brand{
+  font-family:'Cormorant Garamond',serif;
+  font-weight:200;
+  font-size:14px;
+  letter-spacing:.3em;
+  color:rgba(255,235,185,0.68);
+  text-transform:uppercase;
+}
+.footer-meta{
+  font-family:'Inter',sans-serif;
+  font-size:10px;
+  letter-spacing:.15em;
+  color:rgba(246,243,234,0.40);
+  text-transform:uppercase;
+}
+
+/* ═══════════════════════════════════════════════
+   HORIZONTAL RULE
+═══════════════════════════════════════════════ */
+.section-hr{
+  width:1px;
+  height:80px;
+  background:linear-gradient(to bottom,transparent,rgba(255,210,120,0.25),transparent);
+  margin:0 auto;
+}
+
+/* ═══════════════════════════════════════════════
+   AUM EASTER EGG OVERLAY
+═══════════════════════════════════════════════ */
+#aum-overlay{
+  position:fixed;
+  inset:0;
+  z-index:500;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .8s;
+}
+#aum-canvas{
+  width:100%;height:100%;
+}
+#aum-overlay.active{opacity:1}
+
+/* ═══════════════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════════════ */
+.reveal{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity 1s ease, transform 1s ease;
+}
+.reveal.in-view{
+  opacity:1;
+  transform:translateY(0);
+}
+.reveal-delay-1{transition-delay:.15s}
+.reveal-delay-2{transition-delay:.3s}
+.reveal-delay-3{transition-delay:.45s}
+.reveal-delay-4{transition-delay:.6s}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media(max-width:768px){
+  nav{padding:18px 24px}
+  .nav-links{display:none}
+  section{padding:80px 24px}
+  footer{padding:30px 24px}
+  .form-wrap{flex-direction:column}
+  #join-btn{padding:14px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     INTRO OVERLAY (Full-screen reveal)
+══════════════════════════════════ -->
+<div id="intro-overlay">
+  <div id="intro-canvas-wrap">
+    <div id="R" style="width:100%;aspect-ratio:16/9;background:#000;position:relative;overflow:hidden">
+      <canvas id="cv" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+      <div style="position:absolute;bottom:11px;right:13px;z-index:99;display:flex;gap:8px;align-items:center">
+        <span id="st" style="font-family:monospace;font-size:9px;color:rgba(255,255,255,.18);letter-spacing:.1em"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     COSMIC BG (persistent behind page)
+══════════════════════════════════ -->
+<div id="cosmic-bg">
+  <div class="nebula-blob nb1"></div>
+  <div class="nebula-blob nb2"></div>
+  <div class="nebula-blob nb3"></div>
+  <canvas id="bg-canvas"></canvas>
+</div>
+
+<!-- ══════════════════════════════════
+     AUM EASTER EGG OVERLAY
+══════════════════════════════════ -->
+<div id="aum-overlay"><canvas id="aum-canvas"></canvas></div>
+
+<!-- ══════════════════════════════════
+     MAIN PAGE CONTENT
+══════════════════════════════════ -->
+<div id="page">
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Navdyuti <span>·</span> Labs</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#waitlist">Join</a></li>
+      <li><a href="#community">Community</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-inner">
+      <div id="hero-logo-wrap">
+        <canvas id="hero-logo-canvas"></canvas>
+        <div class="easter-egg-msg" id="easter-egg-msg">Creation begins soon.</div>
+      </div>
+      <div class="hero-wordmark">Navdyuti</div>
+      <div class="hero-labs">L &nbsp;&nbsp; A &nbsp;&nbsp; B &nbsp;&nbsp; S</div>
+      <div class="divider"></div>
+      <p class="hero-tagline">
+        Worlds are not built.<br/>
+        They are born.
+      </p>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- MANIFESTO -->
+  <section id="about" style="padding:100px 24px">
+    <div class="section-eyebrow reveal">A New Radiance</div>
+    <div id="manifesto">
+      <div class="manifesto-line reveal">Nav — new.</div>
+      <div class="manifesto-line reveal reveal-delay-1">Dyuti — brilliance, divine radiance.</div>
+      <div class="manifesto-line reveal reveal-delay-2" style="margin-top:24px">
+        We do not make products.<br/>
+        We channel new universes into existence.
+      </div>
+      <div class="manifesto-line reveal reveal-delay-3" style="margin-top:24px">
+        Games. Worlds. Digital realities.<br/>
+        Born from sacred mathematics and cosmic vision.
+      </div>
+    </div>
+  </section>
+
+  <div class="section-hr"></div>
+
+  <!-- PILLARS -->
+  <section style="padding:100px 24px">
+    <div class="section-eyebrow reveal">What We Create</div>
+    <h2 class="section-title reveal">The Three Pillars</h2>
+    <div id="pillars-wrap">
+      <div class="pillar reveal reveal-delay-1">
+        <div class="pillar-glyph">◈</div>
+        <div class="pillar-title">New Worlds</div>
+        <p class="pillar-desc">Immersive games and digital universes where myth and mathematics converge. AAA experiences built from first principles.</p>
+      </div>
+      <div class="pillar reveal reveal-delay-2">
+        <div class="pillar-glyph">⬡</div>
+        <div class="pillar-title">Sacred Tech</div>
+        <p class="pillar-desc">Technology rooted in Vedic geometry and harmonic resonance. Every system carries an underlying cosmic order.</p>
+      </div>
+      <div class="pillar reveal reveal-delay-3">
+        <div class="pillar-glyph">✦</div>
+        <div class="pillar-title">Living Stories</div>
+        <p class="pillar-desc">Narratives that breathe. Not cutscenes — cosmologies. Not characters — archetypes finding their dharma.</p>
+      </div>
+      <div class="pillar reveal reveal-delay-4">
+        <div class="pillar-glyph">⊛</div>
+        <div class="pillar-title">Radiant Craft</div>
+        <p class="pillar-desc">Every detail sculpted with reverence. The unseen is felt. The sublime becomes playable.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-hr"></div>
+
+  <!-- WAITLIST -->
+  <section id="waitlist">
+    <div class="section-eyebrow reveal">The First Circle</div>
+    <h2 class="section-title reveal">Be Present at the Beginning</h2>
+    <p class="section-body reveal">
+      Navdyuti is not just a studio.<br/>
+      It is the birth of new worlds.<br/><br/>
+      Join the first circle and witness what emerges.
+    </p>
+
+    <div id="waitlist-form-block" class="reveal">
+      <div class="form-wrap">
+        <!-- honeypot -->
+        <input class="hp-field" type="text" name="website" tabindex="-1" autocomplete="off"/>
+        <input id="email-input" type="email" placeholder="Enter your email" autocomplete="email"/>
+        <button id="join-btn" type="button">Join the First Light</button>
+      </div>
+      <div id="form-error"></div>
+      <p class="form-note">No noise. Only signal. When creation begins, you will know.</p>
+    </div>
+
+    <div id="success-block" class="success-msg reveal">
+      <div class="success-title">Welcome.</div>
+      <div class="success-body">You will witness the birth.</div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY -->
+  <section id="community">
+    <div class="section-eyebrow reveal">Gather</div>
+    <div class="community-inner reveal">
+      <!-- Discord -->
+      <a href="https://discord.gg/UGdankURcP" target="_blank" rel="noopener noreferrer" class="comm-link" aria-label="Discord">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span class="comm-label">Discord</span>
+      </a>
+      <!-- Twitter / X -->
+      <a href="https://x.com/navdyuti" target="_blank" rel="noopener noreferrer" class="comm-link" aria-label="Twitter / X">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L1.254 2.25H8.08l4.259 5.632zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        <span class="comm-label">X / Twitter</span>
+      </a>
+      <!-- Instagram -->
+      <a href="https://www.instagram.com/navdyuti/" target="_blank" rel="noopener noreferrer" class="comm-link" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+        <span class="comm-label">Instagram</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">Navdyuti Labs</div>
+    <div class="footer-meta">Coming Soon &nbsp;·&nbsp; © <span id="year"></span></div>
+  </footer>
+
+</div><!-- /page -->
+
+<!-- ══════════════════════════════════════════════════
+     INTRO CANVAS ANIMATION (from uploaded file)
+══════════════════════════════════════════════════ -->
+<script>
+(function(){
+const R_el=document.getElementById('R');
+const cv=document.getElementById('cv');
+const g=cv.getContext('2d');
+const stEl=document.getElementById('st');
+let W,H,CX,CY,S,raf,t0=-1;
+let parts=[],pulseRings=[],nebPts=[];
+let audioCtx=null;
+
+function resize(){
+  W=cv.width=R_el.offsetWidth;
+  H=cv.height=R_el.offsetHeight;
+  CX=W/2; CY=H/2; S=W/1280;
+  nebPts=genNeb();
+}
+
+const PI=Math.PI, TAU=PI*2;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const eOut=t=>1-Math.pow(1-t,3);
+const eOut5=t=>1-Math.pow(1-t,5);
+
+function initAudio(){
+  if(audioCtx) return;
+  try{ audioCtx=new(window.AudioContext||window.webkitAudioContext)(); }
+  catch(e){ return; }
+  const ac=audioCtx;
+  const now=ac.currentTime;
+
+  /* ══════════════════════════════════════════════════════
+     3D SPATIAL AUDIO SETUP
+     Listener is at origin (0,0,0) facing forward (0,0,-1)
+     Drones orbit at different radii, speeds & elevations
+     creating a genuine 3D sound field around the listener.
+  ══════════════════════════════════════════════════════ */
+  if(ac.listener.positionX){
+    ac.listener.positionX.value=0;
+    ac.listener.positionY.value=0;
+    ac.listener.positionZ.value=0;
+    ac.listener.forwardX.value=0;
+    ac.listener.forwardY.value=0;
+    ac.listener.forwardZ.value=-1;
+    ac.listener.upX.value=0;
+    ac.listener.upY.value=1;
+    ac.listener.upZ.value=0;
+  }
+
+  function mkReverb(dur=7.0, decay=4.2){
+    const len=Math.floor(ac.sampleRate*dur);
+    const buf=ac.createBuffer(2,len,ac.sampleRate);
+    for(let c=0;c<2;c++){
+      const d=buf.getChannelData(c);
+      for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay);
+    }
+    const node=ac.createConvolver(); node.buffer=buf; return node;
+  }
+  const rev=mkReverb();
+  const revG=ac.createGain(); revG.gain.value=0.55; rev.connect(revG);
+  const masterG=ac.createGain(); masterG.gain.value=0.78; masterG.connect(ac.destination);
+  revG.connect(masterG);
+  const dryG=ac.createGain(); dryG.gain.value=0.52; dryG.connect(masterG);
+
+  /* ── Create a spatial panner that orbits in 3D ──
+     orbitRadius: how far from center
+     orbitSpeed:  radians/sec (slow = ~0.08, medium = ~0.18)
+     orbitTilt:   elevation angle in radians (-PI/4 to PI/4)
+     orbitPhase:  starting angle offset
+  */
+  const spatialNodes=[];
+  function mkSpatial(orbitRadius, orbitSpeed, orbitTilt, orbitPhase){
+    const panner=ac.createPanner();
+    panner.panningModel='HRTF';
+    panner.distanceModel='inverse';
+    panner.refDistance=1;
+    panner.maxDistance=20;
+    panner.rolloffFactor=0.8;
+    panner.coneInnerAngle=360;
+    panner.coneOuterAngle=0;
+    panner.coneOuterGain=0;
+    // Initial position
+    const angle=orbitPhase;
+    const x=orbitRadius*Math.cos(angle);
+    const y=orbitRadius*Math.sin(orbitTilt);
+    const z=orbitRadius*Math.sin(angle);
+    if(panner.positionX){
+      panner.positionX.value=x;
+      panner.positionY.value=y;
+      panner.positionZ.value=z;
+    } else {
+      panner.setPosition(x,y,z);
+    }
+    panner.connect(dryG);
+    panner.connect(rev);
+    spatialNodes.push({panner, orbitRadius, orbitSpeed, orbitTilt, orbitPhase, startT:now});
+    return panner;
+  }
+
+  // Animate spatial nodes — called from the frame loop via window._spatialUpdate
+  window._spatialUpdate=function(){
+    if(!ac) return;
+    const t=ac.currentTime;
+    spatialNodes.forEach(sn=>{
+      const elapsed=t-sn.startT;
+      const angle=sn.orbitPhase+elapsed*sn.orbitSpeed;
+      const x=sn.orbitRadius*Math.cos(angle);
+      const y=sn.orbitRadius*Math.sin(sn.orbitTilt)*Math.sin(elapsed*0.11); // gentle vertical bob
+      const z=sn.orbitRadius*Math.sin(angle);
+      if(sn.panner.positionX){
+        sn.panner.positionX.setTargetAtTime(x, t, 0.1);
+        sn.panner.positionY.setTargetAtTime(y, t, 0.1);
+        sn.panner.positionZ.setTargetAtTime(z, t, 0.1);
+      } else {
+        sn.panner.setPosition(x,y,z);
+      }
+    });
+  };
+
+  const ROOT=82.4;
+
+  /* harmDrone now takes an extra optional spatial config {r,spd,tilt,ph} */
+  function harmDrone(partials, startT, dur, riseT, fallT, spatialCfg){
+    const dest = spatialCfg
+      ? mkSpatial(spatialCfg.r, spatialCfg.spd, spatialCfg.tilt, spatialCfg.ph)
+      : null;
+    partials.forEach(([n, amp])=>{
+      const osc=ac.createOscillator();
+      const env=ac.createGain();
+      osc.type='sine';
+      osc.frequency.value = ROOT * n * (1 + (n-1) * 0.00035);
+      env.gain.setValueAtTime(0, now+startT);
+      env.gain.linearRampToValueAtTime(amp, now+startT+riseT);
+      env.gain.setValueAtTime(amp, now+startT+dur-fallT);
+      env.gain.linearRampToValueAtTime(0, now+startT+dur);
+      if(dest){ osc.connect(env); env.connect(dest); }
+      else { osc.connect(env); env.connect(dryG); env.connect(rev); }
+      osc.start(now+startT); osc.stop(now+startT+dur+0.15);
+    });
+  }
+
+  /* ── AUM phases — each layer placed at a different point in 3D space,
+     slowly orbiting at different speeds and elevations ──
+     "A" vowel: orbits wide & slow, slightly above, from front-right
+     "U" vowel: mid-radius, slightly below, from left
+     "M" hum:   tight slow orbit, on the horizontal plane, behind
+     Settling:  very wide, near-static, from above                    */
+  harmDrone([[1,0.045],[2,0.090],[3,0.075],[4,0.038],[5,0.025],[6,0.014]],
+    0.0, 1.80, 1.40, 0.60,
+    {r:3.2, spd:0.09, tilt: 0.30, ph:0.2});      // "A" — front-right, elevated
+
+  harmDrone([[1,0.065],[2,0.042],[3,0.072],[4,0.022],[5,0.038],[7,0.016]],
+    1.10, 1.80, 1.10, 0.70,
+    {r:2.8, spd:0.13, tilt:-0.20, ph:Math.PI});   // "U" — rear-left, slightly below
+
+  harmDrone([[1,0.090],[2,0.012],[3,0.058],[4,0.006],[5,0.036],[7,0.020],[9,0.014],[11,0.007]],
+    2.20, 3.70, 0.75, 1.60,
+    {r:2.0, spd:0.07, tilt: 0.05, ph:Math.PI/2}); // "M" — right side, near-horizontal
+
+  // Extended "M" hum re-emergence: 7s → 12s
+  harmDrone([[1,0.068],[2,0.009],[3,0.044],[5,0.028],[7,0.014],[9,0.009]],
+    7.00, 5.20, 1.40, 1.80,
+    {r:2.4, spd:0.06, tilt:-0.10, ph:Math.PI*1.5}); // "M" return — opposite quadrant
+
+  // Deep settling drone: 11s → 16s — very wide, from above
+  harmDrone([[1,0.038],[3,0.022],[5,0.014],[7,0.009]],
+    11.00, 5.20, 2.00, 2.00,
+    {r:4.5, spd:0.04, tilt: 0.55, ph:0.0});         // overhead, near-static
+
+  const SA=293.66;
+
+  /* note() also gets a spatial panner — melody feels like it descends from above */
+  function note(freq, startT, dur, vol, spatialCfg){
+    const dest = spatialCfg
+      ? mkSpatial(spatialCfg.r, spatialCfg.spd, spatialCfg.tilt, spatialCfg.ph)
+      : null;
+    [[1,1.0],[2,0.38],[3,0.18],[4,0.08]].forEach(([n,amp])=>{
+      const osc=ac.createOscillator();
+      const env=ac.createGain();
+      osc.type='sine';
+      osc.frequency.value=freq*n;
+      env.gain.setValueAtTime(0, now+startT);
+      env.gain.linearRampToValueAtTime(vol*amp, now+startT+dur*0.30);
+      env.gain.setValueAtTime(vol*amp,           now+startT+dur*0.68);
+      env.gain.linearRampToValueAtTime(0,         now+startT+dur);
+      if(dest){ osc.connect(env); env.connect(dest); }
+      else { osc.connect(env); env.connect(dryG); env.connect(rev); }
+      osc.start(now+startT); osc.stop(now+startT+dur+0.2);
+    });
+  }
+
+  // Sa — floats in from upper-front, drifts clockwise slowly
+  note(SA, 4.00, 5.00, 0.055, {r:2.6, spd:0.08, tilt:0.45, ph:0.1});
+  // Dha — arrives from the left, crossing behind
+  note(493.88, 9.20, 3.20, 0.032, {r:2.2, spd:0.11, tilt:0.15, ph:Math.PI*0.75});
+  // Sa return — wide, descending from above, very quiet
+  note(SA, 12.20, 3.50, 0.022, {r:3.5, spd:0.05, tilt:0.60, ph:Math.PI*1.2});
+
+  // 108Hz sacred sub — centred, no panning (stays in the body/ground)
+  const sub=ac.createOscillator(); const subEnv=ac.createGain();
+  sub.type='sine'; sub.frequency.value=108.0;
+  subEnv.gain.setValueAtTime(0, now);
+  subEnv.gain.linearRampToValueAtTime(0.07, now+2.2);
+  subEnv.gain.setValueAtTime(0.07, now+12.0);
+  subEnv.gain.linearRampToValueAtTime(0.018, now+15.0);
+  subEnv.gain.linearRampToValueAtTime(0, now+16.5);
+  sub.connect(subEnv); subEnv.connect(dryG);
+  sub.start(now); sub.stop(now+17.0);
+}
+
+function genNeb(){
+  return [{x:.18,y:.22,rx:.28,h:260,s:38,al:.07},{x:.82,y:.18,rx:.24,h:280,s:32,al:.06},{x:.5,y:.5,rx:.35,h:30,s:40,al:.05},{x:.25,y:.72,rx:.22,h:200,s:30,al:.06},{x:.78,y:.78,rx:.26,h:45,s:35,al:.05},{x:.5,y:.2,rx:.20,h:220,s:28,al:.04},{x:.12,y:.5,rx:.18,h:310,s:35,al:.05},{x:.88,y:.5,rx:.18,h:15,s:38,al:.04}];
+}
+
+function mkPart(){
+  const a=Math.random()*TAU, r=50+Math.random()*Math.max(W,H)*.62;
+  return{x:CX+Math.cos(a)*r,y:CY+Math.sin(a)*r,vx:(Math.random()-.5)*.062,vy:(Math.random()-.5)*.062,sz:.2+Math.random()*1.1,al:.03+Math.random()*.19,ph:Math.random()*TAU,sp:.18+Math.random()*.44};
+}
+
+const SEG_P1=[[[84,26],[114,26],[136,50],[136,78]],[[136,78],[136,108],[112,130],[84,130]],[[84,130],[56,130],[34,110],[34,82]],[[34,82],[34,58],[50,40],[68,36]],[[68,36],[74,34],[80,38],[82,44]],[[82,44],[84,50],[82,58],[78,64]],[[78,64],[72,72],[68,80],[70,90]],[[70,90],[72,100],[80,106],[90,104]],[[90,104],[102,102],[110,92],[108,80]],[[108,80],[106,68],[96,60],[84,60]],[[84,60],[78,60],[74,64],[74,70]],[[74,70],[74,76],[78,80],[84,80]]];
+const SEG_P2=[[[84,80],[88,80],[92,78],[93,74]],[[93,74],[94,70],[92,66],[88,65]]];
+const SEG_P3=[[[88,65],[86,62],[84,60],[84,57]]];
+const SEG_P4=[[[84,57],[84,52],[83,46],[82,40]]];
+const SEG_P5=[[[82,40],[80,34],[76,28],[78,22]],[[78,22],[79,18],[84,16],[86,20]],[[86,20],[89,25],[86,32],[84,38]]];
+
+function bez(t,p0,p1,p2,p3){
+  const u=1-t;
+  return[u*u*u*p0[0]+3*u*u*t*p1[0]+3*u*t*t*p2[0]+t*t*t*p3[0],u*u*u*p0[1]+3*u*u*t*p1[1]+3*u*t*t*p2[1]+t*t*t*p3[1]];
+}
+function sampleSegs(segs,t){
+  const n=segs.length, idx=clamp(Math.floor(t*n),0,n-1);
+  return bez(clamp(t*n-idx,0,1),segs[idx][0],segs[idx][1],segs[idx][2],segs[idx][3]);
+}
+function buildCoords(segs,steps=32){
+  return segs.flatMap(s=>{const a=[];for(let i=0;i<=steps;i++) a.push(bez(i/steps,s[0],s[1],s[2],s[3]));return a;});
+}
+let C={p1:null,p2:null,p3:null,p4:null,p5:null};
+function initC(){
+  C.p1=buildCoords(SEG_P1); C.p2=buildCoords(SEG_P2);
+  C.p3=buildCoords(SEG_P3); C.p4=buildCoords(SEG_P4); C.p5=buildCoords(SEG_P5);
+}
+
+function lsc(){ return clamp(W*.145,135,245)/168; }
+function lx(v){ return CX+(v-84)*lsc(); }
+function ly(v){ return CY+(v-84)*lsc(); }
+function ls(v){ return v*lsc(); }
+
+// ── EXTENDED TIMELINE: slow, cinematic, synced to AUM music ──
+// Logo draws: 2s→9s (7s to complete), holds: 9s→11s, text: 9.8s→12s
+// Nebula/stars hold through 14s, gentle fade 14s→16s, page reveal at 16s
+const TL={p1s:2.0,p1d:4.2,p2s:6.1,p2d:1.1,p3s:7.1,p3d:0.55,p4s:7.6,p4d:0.60,p5s:8.1,p5d:1.0,done:9.1,pulse:9.2,text:9.8};
+
+function getTip(el){
+  const{p1s,p1d,p2s,p2d,p3s,p3d,p4s,p4d,p5s,p5d}=TL;
+  let segs=null, pt=0;
+  if(el>=p1s&&el<p1s+p1d){segs=SEG_P1;pt=(el-p1s)/p1d;}
+  else if(el>=p2s&&el<p2s+p2d){segs=SEG_P2;pt=(el-p2s)/p2d;}
+  else if(el>=p3s&&el<p3s+p3d){segs=SEG_P3;pt=(el-p3s)/p3d;}
+  else if(el>=p4s&&el<p4s+p4d){segs=SEG_P4;pt=(el-p4s)/p4d;}
+  else if(el>=p5s&&el<p5s+p5d){segs=SEG_P5;pt=(el-p5s)/p5d;}
+  if(!segs) return null;
+  const r=sampleSegs(segs,pt);
+  return{x:lx(r[0]),y:ly(r[1])};
+}
+
+function drawGoldenSpark(x,y,el){
+  const breathe=0.88+0.12*Math.sin(el*8);
+  const g1=g.createRadialGradient(x,y,0,x,y,42*S*breathe);
+  g1.addColorStop(0,'rgba(255,200,60,0.18)');g1.addColorStop(0.4,'rgba(255,170,30,0.10)');g1.addColorStop(1,'rgba(255,140,0,0)');
+  g.globalAlpha=1; g.fillStyle=g1; g.beginPath(); g.arc(x,y,42*S*breathe,0,TAU); g.fill();
+  const g2=g.createRadialGradient(x,y,0,x,y,18*S*breathe);
+  g2.addColorStop(0,'rgba(255,230,120,0.65)');g2.addColorStop(0.5,'rgba(255,190,50,0.35)');g2.addColorStop(1,'rgba(255,150,20,0)');
+  g.fillStyle=g2; g.beginPath(); g.arc(x,y,18*S*breathe,0,TAU); g.fill();
+  const g3=g.createRadialGradient(x,y,0,x,y,7*S*breathe);
+  g3.addColorStop(0,'rgba(255,255,230,1)');g3.addColorStop(0.4,'rgba(255,230,140,0.9)');g3.addColorStop(1,'rgba(255,200,60,0)');
+  g.fillStyle=g3; g.beginPath(); g.arc(x,y,7*S*breathe,0,TAU); g.fill();
+  g.fillStyle='rgba(255,255,255,0.95)'; g.beginPath(); g.arc(x,y,2.2*S,0,TAU); g.fill();
+}
+
+function drawGeo(alpha,el){
+  if(alpha<=0) return;
+  const RR=175*S;
+  g.save(); g.translate(CX,CY); g.rotate(el*.011); g.translate(-CX,-CY);
+  [[0,0],[1,0],[.5,.866],[-.5,.866],[-1,0],[-.5,-.866],[.5,-.866]].forEach(([dx,dy])=>{
+    const cx2=CX+dx*RR*.58,cy2=CY+dy*RR*.58;
+    const grad=g.createLinearGradient(cx2-RR*.3,cy2,cx2+RR*.3,cy2);
+    grad.addColorStop(0,`rgba(140,100,255,${alpha*.2})`);
+    grad.addColorStop(.5,`rgba(255,210,100,${alpha*.25})`);
+    grad.addColorStop(1,`rgba(80,180,255,${alpha*.2})`);
+    g.strokeStyle=grad; g.lineWidth=.65; g.globalAlpha=1;
+    g.beginPath(); g.arc(cx2,cy2,RR*.58,0,TAU); g.stroke();
+  });
+  [RR,RR*1.18,RR*1.36].forEach((r,i)=>{
+    const grad=g.createLinearGradient(CX-r,CY,CX+r,CY);
+    grad.addColorStop(0,`rgba(100,70,255,${alpha*(.17-i*.04)})`);
+    grad.addColorStop(.5,`rgba(255,200,70,${alpha*(.21-i*.05)})`);
+    grad.addColorStop(1,`rgba(60,160,255,${alpha*(.17-i*.04)})`);
+    g.strokeStyle=grad; g.lineWidth=.6; g.globalAlpha=1;
+    g.beginPath(); g.arc(CX,CY,r,0,TAU); g.stroke();
+  });
+  g.restore();
+}
+
+function drawVortex(el,alpha){
+  if(alpha<=0) return;
+  g.save();
+  const arms=6, turns=2.1, pts=48;
+  for(let arm=0;arm<arms;arm++){
+    const ao=(arm/arms)*TAU;
+    g.beginPath();
+    for(let i=0;i<pts;i++){
+      const t=i/(pts-1), r=t*200*S, a=ao+t*turns*TAU+el*.7;
+      const x=CX+Math.cos(a)*r, y=CY+Math.sin(a)*r;
+      i===0?g.moveTo(x,y):g.lineTo(x,y);
+    }
+    const hue=35+arm*8;
+    g.strokeStyle=`hsla(${hue},90%,65%,${alpha*.25})`; g.lineWidth=.8*S;
+    g.globalAlpha=1; g.stroke();
+  }
+  g.restore();
+}
+
+function drawPath(coords,prog,sw,alpha,glowAmt){
+  if(!coords||prog<=0||alpha<=0) return;
+  const end=Math.floor(coords.length*prog);
+  if(end<2) return;
+  function mkP(){
+    coords.slice(0,end).forEach((p,i)=>{
+      const sx=lx(p[0]),sy=ly(p[1]);
+      i===0?g.moveTo(sx,sy):g.lineTo(sx,sy);
+    });
+  }
+  if(glowAmt>0){
+    g.save(); g.beginPath(); mkP();
+    g.strokeStyle=`rgba(255,160,40,${.28*glowAmt})`; g.lineWidth=(sw+28)*lsc(); g.lineCap='round'; g.lineJoin='round'; g.globalAlpha=alpha; g.stroke(); g.restore();
+    g.save(); g.beginPath(); mkP();
+    g.strokeStyle=`rgba(255,210,90,${.18*glowAmt})`; g.lineWidth=(sw+10)*lsc(); g.lineCap='round'; g.lineJoin='round'; g.globalAlpha=alpha; g.stroke(); g.restore();
+  }
+  g.save(); g.beginPath(); mkP();
+  g.strokeStyle='#fff'; g.lineWidth=sw*lsc(); g.lineCap='round'; g.lineJoin='round'; g.globalAlpha=alpha; g.stroke(); g.restore();
+}
+
+function drawTeardrop(prog,alpha,glowAmt){
+  if(prog<=0||alpha<=0) return;
+  drawPath(C.p5,prog,1.5,alpha,glowAmt);
+  if(prog>.82){
+    const fa=eOut((prog-.82)/.18);
+    g.save(); g.beginPath();
+    C.p5.forEach((p,i)=>{
+      const sx=lx(p[0]),sy=ly(p[1]);
+      i===0?g.moveTo(sx,sy):g.lineTo(sx,sy);
+    });
+    g.closePath();
+    const fg=g.createLinearGradient(CX,ly(16),CX,ly(40));
+    fg.addColorStop(0,'rgba(255,245,210,1)'); fg.addColorStop(1,'rgba(255,255,255,1)');
+    g.fillStyle=fg; g.globalAlpha=alpha*fa; g.fill(); g.restore();
+  }
+}
+
+function drawPulseRings(){
+  pulseRings.forEach(pr=>{
+    pr.r+=pr.speed/60; pr.life-=.013;
+    if(pr.life<=0) return;
+    g.save();
+    g.strokeStyle=`rgba(255,200,60,${pr.life*.55})`; g.lineWidth=1.5; g.globalAlpha=1;
+    g.beginPath(); g.arc(CX,CY,pr.r,0,TAU); g.stroke();
+    g.strokeStyle=`rgba(255,200,60,${pr.life*.07})`; g.lineWidth=10;
+    g.beginPath(); g.arc(CX,CY,pr.r,0,TAU); g.stroke();
+    g.restore();
+  });
+  for(let i=pulseRings.length-1;i>=0;i--) if(pulseRings[i].life<=0) pulseRings.splice(i,1);
+}
+
+function drawText(alpha,slide){
+  if(alpha<=0) return;
+  g.save();
+  const sy=(1-slide)*22;
+  const baseY=CY+clamp(W*.112,82,175)+sy;
+  const fs=clamp(W*.024,17,40);  // slightly larger
+  if(alpha>.15){
+    const tg=g.createRadialGradient(CX,baseY,0,CX,baseY,fs*7);
+    tg.addColorStop(0,`rgba(255,210,120,${alpha*.13})`); tg.addColorStop(1,'rgba(0,0,0,0)');
+    g.globalAlpha=1; g.fillStyle=tg; g.fillRect(CX-fs*8,baseY-fs*3,fs*16,fs*6);
+  }
+  // ── NAVDYUTI: crisp, high-contrast, multi-layer glow ──
+  g.textAlign='center'; g.textBaseline='middle';
+  g.font=`300 ${fs}px 'Cormorant Garamond','Garamond','Palatino Linotype',serif`;
+  g.letterSpacing=`${fs*.42}px`;
+  // Wide outer glow pass
+  g.globalAlpha=alpha*0.35;
+  g.fillStyle='rgba(255,210,100,1)';
+  g.shadowColor='rgba(255,200,80,1)'; g.shadowBlur=38;
+  g.fillText('NAVDYUTI',CX,baseY);
+  // Tight inner glow pass
+  g.globalAlpha=alpha*0.55;
+  g.shadowBlur=14;
+  g.fillText('NAVDYUTI',CX,baseY);
+  // Crisp top layer — full opacity
+  g.globalAlpha=alpha;
+  g.fillStyle='rgba(255,242,200,1)';
+  g.shadowColor='rgba(255,220,110,0.6)'; g.shadowBlur=8;
+  g.fillText('NAVDYUTI',CX,baseY);
+  g.shadowBlur=0;
+
+  // ── Divider line ──
+  const lw=clamp(W*.085,72,140);
+  g.strokeStyle=`rgba(255,210,120,${alpha*.55})`; g.lineWidth=.6; g.globalAlpha=alpha;
+  g.beginPath(); g.moveTo(CX-lw/2,baseY+fs*.82); g.lineTo(CX+lw/2,baseY+fs*.82); g.stroke();
+
+  // ── LABS: larger, full contrast, own glow ──
+  const fs2=clamp(W*.011,9,16);  // bigger than before
+  g.font=`300 ${fs2}px 'Cormorant Garamond','Garamond',serif`;
+  g.letterSpacing=`${fs2*.7}px`;
+  // Glow layer
+  g.globalAlpha=alpha*0.45;
+  g.fillStyle='rgba(255,210,120,1)';
+  g.shadowColor='rgba(255,200,80,1)'; g.shadowBlur=20;
+  g.fillText('L  A  B  S',CX,baseY+fs*1.72);
+  // Crisp layer
+  g.globalAlpha=alpha*0.92;
+  g.fillStyle='rgba(255,238,190,1)';
+  g.shadowColor='rgba(255,220,110,0.5)'; g.shadowBlur=6;
+  g.fillText('L  A  B  S',CX,baseY+fs*1.72);
+  g.shadowBlur=0;
+  g.restore();
+}
+
+function frame(now_ts){
+  raf=requestAnimationFrame(frame);
+  if(t0<0) t0=now_ts;
+  const el=(now_ts-t0)/1000;
+  // timer display intentionally suppressed
+
+  g.clearRect(0,0,W,H);
+  g.fillStyle='#000'; g.fillRect(0,0,W,H);
+
+  // Nebula: very subtle deep colour wash, just enough to feel cosmic
+  const nebA=eOut(clamp(el/3.0,0,1))*0.5*clamp(1-(el-13.0)/3.0,0,1);
+  nebPts.forEach(n=>{
+    const grad=g.createRadialGradient(n.x*W,n.y*H,0,n.x*W,n.y*H,n.rx*W);
+    grad.addColorStop(0,`hsla(${n.h},${n.s}%,45%,${n.al*nebA})`);
+    grad.addColorStop(1,'rgba(0,0,0,0)');
+    g.globalAlpha=1; g.fillStyle=grad; g.fillRect(0,0,W,H);
+  });
+
+  // Stars: minimal distant starfield — 1-in-5, barely moving, very faint
+  const pA=eOut(clamp(el/3.0,0,1))*0.22*clamp(1-(el-13.0)/3.0,0,1);
+  if(pA>0){
+    parts.forEach((p,i)=>{
+      if(i%5!==0) return;
+      p.x+=p.vx*0.2; p.y+=p.vy*0.2;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0; if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      const pu=.4+.4*Math.sin(el*p.sp*0.5+p.ph);
+      g.globalAlpha=p.al*pA*pu*0.45; g.fillStyle='#fff';
+      g.beginPath(); g.arc(p.x,p.y,p.sz*0.65,0,TAU); g.fill();
+    });
+  }
+
+  // Ambient glow: soft centred breath, tightly focused
+  const gA=eOut(clamp((el-.2)/2.5,0,1))*clamp(1-(el-13.0)/3.0,0,1);
+  if(gA>0){
+    const ag=g.createRadialGradient(CX,CY,0,CX,CY,H*.35);
+    ag.addColorStop(0,`rgba(255,155,40,${gA*.08})`);
+    ag.addColorStop(.4,`rgba(80,30,180,${gA*.04})`);
+    ag.addColorStop(1,'rgba(0,0,0,0)');
+    g.globalAlpha=1; g.fillStyle=ag; g.fillRect(0,0,W,H);
+  }
+
+  // Sacred geometry: slow bloom 0→3.5s, hold at full until 5s so it is
+  // completely formed and visible, then cross-fade down to a quiet 20%
+  // presence that sits behind the logo through to the final dissolve.
+  const geoRise=eOut(clamp(el/3.5,0,1));             // blooms fully by 3.5s
+  const geoHoldFlat=clamp(1-(el-5.0)/2.5,0,1);       // holds peak until 5s then steps down
+  const geoBg=clamp((el-7.5)/1.0,0,1)*0.20;          // settles to 20% background from 7.5s
+  const geoA=(geoRise*geoHoldFlat + geoBg)*clamp(1-(el-13.0)/3.0,0,1);
+  drawGeo(geoA,el);
+
+  const{p1s,p1d,p2s,p2d,p3s,p3d,p4s,p4d,p5s,p5d,done}=TL;
+  // Logo alpha: fade in as drawing starts, hold, then gently dissolve from 13.5s over 2.5s
+  const lAlpha=clamp((el-p1s)/.5,0,1)*clamp(1-(el-13.5)/2.5,0,1);
+  // Glow: burst on completion, settle to gentle breathing glow, fade with logo
+  const glowT=clamp((el-done)/.6,0,1);
+  const glowA=eOut5(glowT)*clamp(1-(el-done-2.0)/1.2,0,1);
+  const settledG=el>done+2.0?clamp((el-done-2.0)/.8,0,1)*.28*clamp(1-(el-13.5)/2.5,0,1):0;
+  const finalG=glowA+settledG;
+
+  drawPath(C.p1,eOut(clamp((el-p1s)/p1d,0,1)),9,lAlpha,finalG);
+  drawPath(C.p2,eOut(clamp((el-p2s)/p2d,0,1)),5,lAlpha,finalG);
+  drawPath(C.p3,eOut(clamp((el-p3s)/p3d,0,1)),2.5,lAlpha,finalG);
+  drawPath(C.p4,eOut(clamp((el-p4s)/p4d,0,1)),2,lAlpha,finalG);
+  drawTeardrop(eOut(clamp((el-p5s)/p5d,0,1)),lAlpha,finalG);
+
+  const tip=getTip(el);
+  if(tip) drawGoldenSpark(tip.x,tip.y,el);
+
+  if(el>done){
+    const bA=eOut5(clamp((el-done)/.5,0,1))*clamp(1-(el-done-.9)/.8,0,1);
+    const sb=el>done+.9?clamp((el-done-.9)/.5,0,1)*.2:0;
+    const bT=bA+sb;
+    if(bT>0){
+      [[ls(90),'rgba(255,215,60,.16)'],[ls(55),'rgba(255,255,200,.22)'],[ls(28),'rgba(255,240,180,.12)']].forEach(([br,col])=>{
+        const gr=g.createRadialGradient(CX,CY,0,CX,CY,br);
+        gr.addColorStop(0,col); gr.addColorStop(1,'rgba(0,0,0,0)');
+        g.globalAlpha=bT; g.fillStyle=gr; g.fillRect(0,0,W,H);
+      });
+    }
+  }
+
+  if(el>TL.pulse-.01&&el<TL.pulse+.04&&pulseRings.length<1) pulseRings.push({r:ls(38),life:1,speed:230*S});
+  if(el>TL.pulse+.28&&el<TL.pulse+.32&&pulseRings.length<2) pulseRings.push({r:ls(38),life:1,speed:210*S});
+  if(el>TL.pulse+.55&&el<TL.pulse+.59&&pulseRings.length<3) pulseRings.push({r:ls(38),life:1,speed:195*S});
+  drawPulseRings();
+
+  // Text: fade in slowly from 9.8s, hold, then fade out with logo from 13.5s
+  const textAlpha=eOut5(clamp((el-TL.text)/1.8,0,1))*clamp(1-(el-13.5)/2.5,0,1);
+  drawText(textAlpha, eOut(clamp((el-TL.text)/2.2,0,1)));
+
+  const vg=g.createRadialGradient(CX,CY,H*.18,CX,CY,H*.85);
+  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,.65)');
+  g.globalAlpha=1; g.fillStyle=vg; g.fillRect(0,0,W,H);
+  // Animate 3D spatial panner positions every frame
+  if(window._spatialUpdate) window._spatialUpdate();
+
+  g.globalAlpha=1;
+
+  // Page reveal: wait for music to end and logo to fully dissolve (~16s)
+  if(el>16.0 && !window._pageRevealed) revealPage();
+  if(el>18.0){ cancelAnimationFrame(raf); if(!window._pageRevealed) revealPage(); }
+}
+
+function GO(){
+  cancelAnimationFrame(raf);
+  resize(); initC();
+  parts=Array.from({length:280},mkPart);
+  pulseRings.length=0;
+  if(audioCtx){try{audioCtx.close();}catch(e){} audioCtx=null;}
+  initAudio();
+  t0=-1;
+  raf=requestAnimationFrame(frame);
+}
+
+R_el.addEventListener('click',e=>{
+  if(e.target===R_el||e.target===cv){
+    if(stEl){ stEl.textContent=''; stEl.style.display='none'; }
+    if(!window._introStarted){
+      window._introStarted=true;
+      if(_dotRaf){ cancelAnimationFrame(_dotRaf); _dotRaf=null; }
+    }
+    if(t0<0) GO();
+  }
+});
+window.addEventListener('resize',()=>{resize();initC();});
+resize(); initC();
+parts=Array.from({length:280},mkPart);
+
+// ── CINEMATIC 3-SECOND START ──
+// Page opens in darkness. After 3s the prompt appears.
+// First click anywhere starts the full intro with sound.
+// This matches the browser autoplay policy (user gesture required).
+if(stEl) stEl.textContent='';  // silent on load
+
+// Draw a pulsating golden dot on the canvas immediately to hint "click me"
+let _dotRaf=null;
+(function drawWaitDot(){
+  resize();
+  let _dotT=0;
+  function _dotFrame(ts){
+    _dotRaf=requestAnimationFrame(_dotFrame);
+    _dotT=ts/1000;
+    g.clearRect(0,0,W,H);
+    g.fillStyle='#000'; g.fillRect(0,0,W,H);
+
+    // Outer slow pulse ring
+    const ringScale=1+0.22*Math.sin(_dotT*1.8);
+    const ringAlpha=0.18+0.12*Math.sin(_dotT*1.8);
+    const rr=38*S*ringScale;
+    const rg=g.createRadialGradient(CX,CY,0,CX,CY,rr);
+    rg.addColorStop(0,`rgba(255,200,60,${ringAlpha})`);
+    rg.addColorStop(0.55,`rgba(255,170,30,${ringAlpha*0.4})`);
+    rg.addColorStop(1,'rgba(0,0,0,0)');
+    g.globalAlpha=1; g.fillStyle=rg;
+    g.beginPath(); g.arc(CX,CY,rr,0,Math.PI*2); g.fill();
+
+    // Second slower outer halo
+    const halo=48*S*(1+0.35*Math.sin(_dotT*0.9+1.2));
+    const hg=g.createRadialGradient(CX,CY,0,CX,CY,halo);
+    hg.addColorStop(0,`rgba(255,160,40,${0.08+0.06*Math.sin(_dotT*0.9)})`);
+    hg.addColorStop(1,'rgba(0,0,0,0)');
+    g.fillStyle=hg; g.beginPath(); g.arc(CX,CY,halo,0,Math.PI*2); g.fill();
+
+    // Core glowing dot
+    const core=7*S*(0.9+0.1*Math.sin(_dotT*3.2));
+    const cg=g.createRadialGradient(CX,CY,0,CX,CY,core);
+    cg.addColorStop(0,'rgba(255,255,220,1)');
+    cg.addColorStop(0.4,'rgba(255,220,100,0.9)');
+    cg.addColorStop(1,'rgba(255,180,40,0)');
+    g.fillStyle=cg; g.beginPath(); g.arc(CX,CY,core,0,Math.PI*2); g.fill();
+
+    // Pinpoint white centre
+    g.fillStyle='rgba(255,255,255,0.98)';
+    g.beginPath(); g.arc(CX,CY,2*S,0,Math.PI*2); g.fill();
+
+    g.globalAlpha=1;
+  }
+  _dotRaf=requestAnimationFrame(_dotFrame);
+})();
+
+setTimeout(()=>{
+  if(window._pageRevealed) return;
+  if(stEl) stEl.textContent='▶  CLICK TO BEGIN';
+
+  const startIntro=()=>{
+    if(window._introStarted) return;
+    window._introStarted=true;
+    document.removeEventListener('click', startIntro);
+    if(stEl){ stEl.textContent=''; stEl.style.display='none'; }
+    // Stop the waiting dot animation — GO() will take over the canvas
+    if(_dotRaf){ cancelAnimationFrame(_dotRaf); _dotRaf=null; }
+    if(audioCtx && audioCtx.state==='suspended') audioCtx.resume();
+    GO();
+  };
+  document.addEventListener('click', startIntro);
+}, 3000);
+
+window.introGO=GO;
+window._introStarted=false;
+})();
+</script>
+
+<!-- ══════════════════════════════════════════════════
+     PAGE REVEAL + HERO LOGO + INTERACTIONS
+══════════════════════════════════════════════════ -->
+<script>
+window._pageRevealed=false;
+
+function revealPage(){
+  if(window._pageRevealed) return;
+  window._pageRevealed=true;
+  const overlay=document.getElementById('intro-overlay');
+  overlay.classList.add('fade-out');
+  setTimeout(()=>{ overlay.style.display='none'; },1600);
+  const page=document.getElementById('page');
+  page.classList.add('visible');
+  startBgCanvas();
+  startHeroLogo();
+  initScrollReveal();
+  // Start soft ambient page hum after a short delay (music has just ended)
+  setTimeout(startPageAmbience, 1800);
+}
+
+// ── PAGE AMBIENCE: pure cyclic AUM breath ──
+// One wave only: lowest → approaching medium → back to lowest.
+// Built from the AUM "M" nasal hum harmonics (odd partials of E2 = 82.4Hz).
+// A single breath cycle: ~18s rise to near-medium, ~18s fall back to lowest.
+// Loops forever. No percussion, no melody, no complexity — just the AUM wave.
+function startPageAmbience(){
+  let ambiCtx;
+  try{ ambiCtx=new(window.AudioContext||window.webkitAudioContext)(); }
+  catch(e){ return; }
+  const ac=ambiCtx;
+
+  // Gentle reverb tail — makes the AUM feel like a sacred space, not a headphone tone
+  function mkReverb(dur=8.0, decay=4.5){
+    const len=Math.floor(ac.sampleRate*dur);
+    const buf=ac.createBuffer(2,len,ac.sampleRate);
+    for(let c=0;c<2;c++){
+      const d=buf.getChannelData(c);
+      for(let i=0;i<len;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/len,decay);
+    }
+    const n=ac.createConvolver(); n.buffer=buf; return n;
+  }
+  const rev=mkReverb();
+  const master=ac.createGain(); master.gain.value=0; master.connect(ac.destination);
+  const revG=ac.createGain(); revG.gain.value=0.60; rev.connect(revG); revG.connect(master);
+  const dryG=ac.createGain(); dryG.gain.value=0.40; dryG.connect(master);
+
+  // Fade master in gently — 5s to reach working level
+  master.gain.setValueAtTime(0, ac.currentTime);
+  master.gain.linearRampToValueAtTime(0.28, ac.currentTime+5.0);
+
+  // ROOT: E2 = 82.4Hz — same root as the intro AUM, one octave up from page drone
+  // "M" hum partials: fundamental + odd harmonics only (1, 3, 5, 7, 9)
+  // Volumes kept very gentle — approaching medium means ~0.55× peak, not full blast
+  const ROOT = 82.4;
+  const AUM_PARTIALS = [
+    [1, 0.072],  // fundamental — warm, centred
+    [3, 0.044],  // 3rd — nasal nasal resonance
+    [5, 0.028],  // 5th — colour
+    [7, 0.016],  // 7th — subtle shimmer
+    [9, 0.009],  // 9th — barely perceptible air
+  ];
+
+  // One shared LFO drives all partials — the WAVE
+  // Wave shape: sinusoidal, period = 36s (18s up, 18s down)
+  // At peak the master gain reaches ~0.28 (what we set above = the "approaching medium" ceiling)
+  // At trough it falls to ~0.04 (the "lowest" floor — still audible, just barely there)
+  // This means volume oscillates between whisper and just-below-medium, never silent, never loud.
+  const waveLFO = ac.createOscillator();
+  const waveLFOGain = ac.createGain();
+  waveLFO.type = 'sine';
+  waveLFO.frequency.value = 1/36; // one full breath every 36 seconds
+
+  // LFO maps -1..+1 → we want gain to range from ~0.04 to ~0.28
+  // Use a DC offset + LFO: gain = 0.16 + 0.12*sin(t)
+  // → min = 0.04, max = 0.28  (never silent, never loud)
+  const lfoOffset = ac.createGain();
+  lfoOffset.gain.value = 1; // passes through
+
+  // Create the oscillator bank — all partials share the same LFO envelope
+  AUM_PARTIALS.forEach(([n, amp])=>{
+    const osc = ac.createOscillator();
+    osc.type = 'sine';
+    // Tiny per-partial detuning — the classic AUM warmth beating
+    osc.frequency.value = ROOT * n * (1 + (n-1)*0.00038);
+
+    const env = ac.createGain();
+    env.gain.value = amp; // static partial amplitude
+
+    osc.connect(env);
+    env.connect(dryG);
+    env.connect(rev);
+    osc.start(ac.currentTime);
+  });
+
+  // The volume wave: a single GainNode whose gain oscillates via the LFO
+  // We wire the LFO into master gain so the whole mix breathes together
+  const waveGain = ac.createGain();
+  waveGain.gain.value = 0.16; // DC centre of the wave
+
+  waveLFOGain.gain.value = 0.12; // amplitude of swing above/below centre
+  waveLFO.connect(waveLFOGain);
+  waveLFOGain.connect(master.gain); // modulates the master directly
+
+  waveLFO.start(ac.currentTime);
+  // Start LFO at trough (lowest) by offsetting its phase — use a short ramp to set initial phase
+  // We do this by starting the LFO phase at -π/2 so it begins at minimum and rises first
+  // Web Audio doesn't have phase control, so we schedule: set master to floor, let LFO take over
+  master.gain.setValueAtTime(0.04, ac.currentTime+5.1); // snap to floor right after fade-in
+  // From here the LFO takes over and the wave breathes naturally
+
+  window._ambiCtx=ambiCtx;
+  window._ambiMaster=master;
+
+  document.addEventListener('visibilitychange',()=>{
+    if(!window._ambiMaster) return;
+    const gn=window._ambiMaster.gain;
+    if(document.hidden){
+      gn.linearRampToValueAtTime(0, ac.currentTime+2.0);
+    } else {
+      gn.linearRampToValueAtTime(0.16, ac.currentTime+3.0);
+    }
+  });
+}
+
+// skip button removed — only the pulsating dot triggers the experience
+
+// ── HERO LOGO (looping after reveal) ──
+function startHeroLogo(){
+  const canvas=document.getElementById('hero-logo-canvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,CX,CY,S,raf2;
+  const TAU=Math.PI*2;
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const eOut=t=>1-Math.pow(1-t,3);
+
+  function resize(){
+    const wrap=canvas.parentElement;
+    W=canvas.width=wrap.offsetWidth;
+    H=canvas.height=wrap.offsetHeight;
+    CX=W/2; CY=H/2; S=W/320;
+  }
+
+  const SEG_P1=[[[84,26],[114,26],[136,50],[136,78]],[[136,78],[136,108],[112,130],[84,130]],[[84,130],[56,130],[34,110],[34,82]],[[34,82],[34,58],[50,40],[68,36]],[[68,36],[74,34],[80,38],[82,44]],[[82,44],[84,50],[82,58],[78,64]],[[78,64],[72,72],[68,80],[70,90]],[[70,90],[72,100],[80,106],[90,104]],[[90,104],[102,102],[110,92],[108,80]],[[108,80],[106,68],[96,60],[84,60]],[[84,60],[78,60],[74,64],[74,70]],[[74,70],[74,76],[78,80],[84,80]]];
+  const SEG_P2=[[[84,80],[88,80],[92,78],[93,74]],[[93,74],[94,70],[92,66],[88,65]]];
+  const SEG_P3=[[[88,65],[86,62],[84,60],[84,57]]];
+  const SEG_P4=[[[84,57],[84,52],[83,46],[82,40]]];
+  const SEG_P5=[[[82,40],[80,34],[76,28],[78,22]],[[78,22],[79,18],[84,16],[86,20]],[[86,20],[89,25],[86,32],[84,38]]];
+
+  function bez(t,p0,p1,p2,p3){
+    const u=1-t;
+    return[u*u*u*p0[0]+3*u*u*t*p1[0]+3*u*t*t*p2[0]+t*t*t*p3[0],u*u*u*p0[1]+3*u*u*t*p1[1]+3*u*t*t*p2[1]+t*t*t*p3[1]];
+  }
+  function buildCoords(segs,steps=32){
+    return segs.flatMap(s=>{const a=[];for(let i=0;i<=steps;i++) a.push(bez(i/steps,s[0],s[1],s[2],s[3]));return a;});
+  }
+  const allSegs=[...buildCoords(SEG_P1),...buildCoords(SEG_P2),...buildCoords(SEG_P3),...buildCoords(SEG_P4),...buildCoords(SEG_P5)];
+
+  function lx(v){return CX+(v-84)*S;}
+  function ly(v){return CY+(v-84)*S;}
+
+  let glowPulse=0;
+
+  function drawLogo(gl){
+    // glow layers
+    [[55,'rgba(255,160,40,0.10)'],[32,'rgba(255,210,90,0.16)'],[16,'rgba(255,230,140,0.12)']].forEach(([r,col])=>{
+      const gr=ctx.createRadialGradient(CX,CY,0,CX,CY,r*S*gl);
+      gr.addColorStop(0,col); gr.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.globalAlpha=1; ctx.fillStyle=gr; ctx.fillRect(0,0,W,H);
+    });
+    // outer glow path
+    ctx.save(); ctx.beginPath();
+    allSegs.forEach((p,i)=>{
+      const sx=lx(p[0]),sy=ly(p[1]);
+      i===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);
+    });
+    ctx.strokeStyle=`rgba(255,160,40,${0.22*gl})`;
+    ctx.lineWidth=18*S; ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.globalAlpha=1; ctx.stroke(); ctx.restore();
+    // white stroke
+    ctx.save(); ctx.beginPath();
+    allSegs.forEach((p,i)=>{
+      const sx=lx(p[0]),sy=ly(p[1]);
+      i===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);
+    });
+    ctx.strokeStyle='rgba(255,245,220,0.92)';
+    ctx.lineWidth=2.2*S; ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.globalAlpha=1; ctx.stroke(); ctx.restore();
+    // teardrop fill
+    const p5c=buildCoords(SEG_P5);
+    ctx.save(); ctx.beginPath();
+    p5c.forEach((p,i)=>{
+      const sx=lx(p[0]),sy=ly(p[1]);
+      i===0?ctx.moveTo(sx,sy):ctx.lineTo(sx,sy);
+    });
+    ctx.closePath();
+    const fg=ctx.createLinearGradient(CX,ly(16),CX,ly(40));
+    fg.addColorStop(0,'rgba(255,245,210,1)'); fg.addColorStop(1,'rgba(255,255,255,1)');
+    ctx.fillStyle=fg; ctx.globalAlpha=1; ctx.fill(); ctx.restore();
+  }
+
+  let t=0;
+  function loop(ts){
+    raf2=requestAnimationFrame(loop);
+    t=ts/1000;
+    ctx.clearRect(0,0,W,H);
+    const gl=0.7+0.3*Math.sin(t*0.9);
+    drawLogo(gl);
+  }
+
+  resize();
+  window.addEventListener('resize',resize);
+  raf2=requestAnimationFrame(loop);
+}
+
+// ── EASTER EGG 1: Triple click on logo — cinematic dim/reveal/restore ──
+let eggClicks=0, eggTimer=null, eggActive=false;
+document.getElementById('hero-logo-wrap').addEventListener('click',()=>{
+  if(eggActive) return;
+  eggClicks++;
+  clearTimeout(eggTimer);
+  eggTimer=setTimeout(()=>{ eggClicks=0; },700);
+  if(eggClicks>=3){
+    eggClicks=0;
+    eggActive=true;
+    triggerLogoEasterEgg();
+  }
+});
+
+function triggerLogoEasterEgg(){
+  const canvas=document.getElementById('hero-logo-canvas');
+  const msg=document.getElementById('easter-egg-msg');
+
+  // Phase 1: dim the logo canvas over 0.8s
+  let dimStart=null;
+  const DIM_DUR=800, HOLD_DUR=2800, RESTORE_DUR=1000;
+
+  function dimLoop(ts){
+    if(!dimStart) dimStart=ts;
+    const t=Math.min((ts-dimStart)/DIM_DUR,1);
+    // opacity: 1 → 0.08 (nearly invisible but not gone)
+    canvas.style.opacity=(1-t*0.92).toFixed(3);
+    if(t<1){ requestAnimationFrame(dimLoop); }
+    else{
+      canvas.style.opacity='0.08';
+      // Phase 2: message fades in
+      msg.style.transition='opacity 0.7s ease';
+      msg.style.opacity='1';
+      msg.classList.add('show');
+      // Phase 3: hold, then fade message out
+      setTimeout(()=>{
+        msg.style.transition='opacity 1.1s ease';
+        msg.style.opacity='0';
+        setTimeout(()=>{
+          msg.classList.remove('show');
+          msg.style.opacity='';
+          msg.style.transition='';
+          // Phase 4: restore logo over RESTORE_DUR
+          let restoreStart=null;
+          function restoreLoop(ts2){
+            if(!restoreStart) restoreStart=ts2;
+            const t2=Math.min((ts2-restoreStart)/RESTORE_DUR,1);
+            canvas.style.opacity=(0.08+t2*0.92).toFixed(3);
+            if(t2<1){ requestAnimationFrame(restoreLoop); }
+            else{
+              canvas.style.opacity='';
+              eggActive=false;
+            }
+          }
+          requestAnimationFrame(restoreLoop);
+        }, 1200);
+      }, HOLD_DUR);
+    }
+  }
+  requestAnimationFrame(dimLoop);
+}
+
+// ── EASTER EGG 2: Type "aum" or "ॐ" ──
+let typedBuffer='';
+document.addEventListener('keydown',e=>{
+  typedBuffer=(typedBuffer+e.key).slice(-6).toLowerCase();
+  if(typedBuffer.includes('aum')||typedBuffer.includes('ॐ')){
+    typedBuffer='';
+    triggerAumEasterEgg();
+  }
+});
+
+function triggerAumEasterEgg(){
+  const overlay=document.getElementById('aum-overlay');
+  const canvas=document.getElementById('aum-canvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  overlay.classList.add('active');
+
+  let t=0,raf3;
+  const TAU=Math.PI*2;
+  const W=canvas.width, H=canvas.height;
+  const CX=W/2, CY=H/2;
+
+  function drawAumGeo(alpha,el){
+    if(alpha<=0) return;
+    const S=W/1280;
+    const RR=Math.min(W,H)*.28;
+    ctx.save(); ctx.translate(CX,CY); ctx.rotate(el*.006); ctx.translate(-CX,-CY);
+    // Flower of Life
+    [[0,0],[1,0],[.5,.866],[-.5,.866],[-1,0],[-.5,-.866],[.5,-.866]].forEach(([dx,dy])=>{
+      const cx2=CX+dx*RR*.58, cy2=CY+dy*RR*.58;
+      const grad=ctx.createLinearGradient(cx2-RR*.3,cy2,cx2+RR*.3,cy2);
+      grad.addColorStop(0,`rgba(140,100,255,${alpha*.35})`);
+      grad.addColorStop(.5,`rgba(255,210,100,${alpha*.45})`);
+      grad.addColorStop(1,`rgba(80,180,255,${alpha*.35})`);
+      ctx.strokeStyle=grad; ctx.lineWidth=1; ctx.globalAlpha=1;
+      ctx.beginPath(); ctx.arc(cx2,cy2,RR*.58,0,TAU); ctx.stroke();
+    });
+    // Rings
+    [RR,RR*1.18,RR*1.36,RR*1.55].forEach((r,i)=>{
+      ctx.strokeStyle=`rgba(255,200,70,${alpha*(.3-i*.05)})`; ctx.lineWidth=.8; ctx.globalAlpha=1;
+      ctx.beginPath(); ctx.arc(CX,CY,r,0,TAU); ctx.stroke();
+    });
+    // Radial lines (Sri Yantra inspired)
+    for(let i=0;i<9;i++){
+      const a=i/9*TAU;
+      ctx.strokeStyle=`rgba(255,210,120,${alpha*.2})`; ctx.lineWidth=.5;
+      ctx.beginPath();
+      ctx.moveTo(CX+Math.cos(a)*RR*.3,CY+Math.sin(a)*RR*.3);
+      ctx.lineTo(CX+Math.cos(a)*RR*1.5,CY+Math.sin(a)*RR*1.5);
+      ctx.stroke();
+    }
+    // Golden particles
+    for(let i=0;i<48;i++){
+      const a=(i/48)*TAU+el*.4;
+      const r=RR*(0.5+0.5*Math.sin(el*1.2+i));
+      const px=CX+Math.cos(a)*r, py=CY+Math.sin(a)*r;
+      const pal=alpha*(.3+.3*Math.sin(el*3+i));
+      ctx.fillStyle=`rgba(255,210,80,${pal})`;
+      ctx.globalAlpha=1;
+      ctx.beginPath(); ctx.arc(px,py,1.5,0,TAU); ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  const totalDur=4.0;
+  let start=null;
+  function animFrame(ts){
+    if(!start) start=ts;
+    const el=(ts-start)/1000;
+    ctx.clearRect(0,0,W,H);
+    const alpha=el<0.8?el/0.8:el>3.2?Math.max(0,(totalDur-el)/0.8):1;
+    drawAumGeo(alpha,el);
+    if(el<totalDur){ raf3=requestAnimationFrame(animFrame); }
+    else{
+      cancelAnimationFrame(raf3);
+      overlay.classList.remove('active');
+      ctx.clearRect(0,0,W,H);
+    }
+  }
+  cancelAnimationFrame(raf3);
+  raf3=requestAnimationFrame(animFrame);
+}
+
+// ── PERSISTENT COSMIC BG CANVAS (starfield) ──
+function startBgCanvas(){
+  const canvas=document.getElementById('bg-canvas');
+  const ctx=canvas.getContext('2d');
+  let W,H,stars=[];
+  const TAU=Math.PI*2;
+
+  function resize(){
+    W=canvas.width=window.innerWidth;
+    H=canvas.height=window.innerHeight;
+    stars=Array.from({length:160},()=>({
+      x:Math.random()*W, y:Math.random()*H,
+      vx:(Math.random()-.5)*.04, vy:(Math.random()-.5)*.04,
+      sz:.2+Math.random()*.7,
+      al:.04+Math.random()*.14,
+      ph:Math.random()*TAU, sp:.1+Math.random()*.25
+    }));
+  }
+
+  function loop(ts){
+    requestAnimationFrame(loop);
+    const t=ts/1000;
+    ctx.clearRect(0,0,W,H);
+    stars.forEach(s=>{
+      s.x+=s.vx; s.y+=s.vy;
+      if(s.x<0)s.x=W; if(s.x>W)s.x=0;
+      if(s.y<0)s.y=H; if(s.y>H)s.y=0;
+      const pu=.5+.5*Math.sin(t*s.sp+s.ph);
+      ctx.globalAlpha=s.al*pu;
+      ctx.fillStyle='#fff';
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.sz,0,TAU); ctx.fill();
+    });
+    ctx.globalAlpha=1;
+  }
+
+  resize();
+  window.addEventListener('resize',resize);
+  requestAnimationFrame(loop);
+}
+
+// ── SCROLL REVEAL ──
+function initScrollReveal(){
+  const els=document.querySelectorAll('.reveal');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting) e.target.classList.add('in-view');
+    });
+  },{threshold:0.15});
+  els.forEach(el=>obs.observe(el));
+}
+
+// ── MANIFESTO SCROLL LIGHTING ──
+window.addEventListener('scroll',()=>{
+  document.querySelectorAll('.manifesto-line').forEach(line=>{
+    const r=line.getBoundingClientRect();
+    const center=r.top+r.height/2;
+    const vh=window.innerHeight;
+    const dist=Math.abs(center-vh/2);
+    if(dist<vh*.35) line.classList.add('lit');
+    else line.classList.remove('lit');
+  });
+},{passive:true});
+
+// ── EMAIL WAITLIST ──
+document.getElementById('join-btn').addEventListener('click',async()=>{
+  const email=document.getElementById('email-input').value.trim();
+  const hp=document.querySelector('.hp-field');
+  const errEl=document.getElementById('form-error');
+  errEl.textContent='';
+
+  // Honeypot check
+  if(hp&&hp.value){ return; }
+
+  // Validation
+  const re=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if(!re.test(email)){
+    errEl.textContent='Please enter a valid email address.';
+    return;
+  }
+
+  const btn=document.getElementById('join-btn');
+  btn.textContent='...';
+  btn.style.pointerEvents='none';
+
+  // Simulate submit (replace with real API endpoint)
+  await new Promise(r=>setTimeout(r,900));
+
+  document.getElementById('waitlist-form-block').style.display='none';
+  const success=document.getElementById('success-block');
+  success.classList.add('show');
+  success.style.display='block';
+});
+
+// ── FOOTER YEAR ──
+document.getElementById('year').textContent=new Date().getFullYear();
+</script>
+
+</body>
+</html>
