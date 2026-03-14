@@ -2,7 +2,7 @@
 
 Worlds are not built. They are born.
 
-Navdyuti Labs is a next generation game studio focused on creating immersive digital worlds inspired by sacred mathematics, cosmic storytelling, and mythological archetypes.
+Navdyuti Labs is a next-generation game studio focused on creating immersive digital worlds inspired by sacred mathematics, cosmic storytelling, and mythological archetypes.
 
 This repository contains the official launch page for Navdyuti Labs.
 
@@ -22,35 +22,22 @@ They are living universes.
 
 ## Features
 
-Cinematic intro animation
-Sacred geometry inspired visuals
-Cosmic particle environment
-Spatial 3D audio experience
-Interactive canvas animations
-Waitlist system for early community
+- Cinematic intro animation
+- Sacred geometry-inspired visuals
+- Cosmic particle environment
+- Spatial 3D audio experience
+- Interactive canvas animations
+- Waitlist system for the early community
 
 ---
 
 ## Technology
 
-HTML5
-CSS3
-JavaScript
-Canvas API
-WebAudio API
-
----
-
-## Project Structure
-
-navdyuti-coming-soon
-│
-├── index.html
-├── README.md
-├── LICENSE
-└── .gitignore
-
----
+- HTML5
+- CSS3
+- JavaScript
+- Canvas API
+- WebAudio API
 
 ## Community
 
@@ -67,15 +54,13 @@ https://www.instagram.com/navdyuti/
 
 ## Philosophy
 
-Nav — new.
+Nav — new
 
 Dyuti — brilliance, divine radiance.
 
-Navdyuti represents the birth of new creative light.
+Navdyuti represents the birth of new creative light
 
-We do not simply create games.
-
-We channel worlds into existence.
+We do not simply create games; we channel worlds into existence.
 
 ---
 
